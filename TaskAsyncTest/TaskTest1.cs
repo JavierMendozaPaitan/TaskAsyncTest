@@ -21,10 +21,16 @@ namespace TaskAsyncTest
                 Thread.Sleep(5000);
                 Console.WriteLine("End of taskA.");
             });
-            
+            Console.WriteLine($"######### taskA: [{taskA.Status}]");
             // Start the task.
             taskA.Start();
-            
+
+            Console.WriteLine($"######### taskA: [{taskA.Status}]");
+
+            taskA.Wait();
+
+            Console.WriteLine($"######### taskA: [{taskA.Status}]");
+
             Thread.Sleep(2000);
 
 
@@ -32,7 +38,7 @@ namespace TaskAsyncTest
             Console.WriteLine("Hello from thread '{0}'.",
                               Thread.CurrentThread.Name);
 
-            taskA.Wait();
+            
             
 
             Console.ReadKey();

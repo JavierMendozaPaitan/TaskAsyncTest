@@ -23,7 +23,7 @@
         {
             HttpClient client = new();
             var response = client.GetAsync(url).Result;
-            Thread.Sleep(3000);
+            Thread.Sleep(9000);
             Console.WriteLine($"Status for {url} is {response.StatusCode}");
             
         }
