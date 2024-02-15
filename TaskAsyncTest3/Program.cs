@@ -11,14 +11,18 @@ namespace TaskAsyncTest3
     {
         static void Main(string[] args)
         {
-            Task taskA = Task.Run(() => Thread.Sleep(3000));
+            Action<object> actionForTask = MethodForTask1;
+            Task taskC = Task.Factory.StartNew(actionForTask, "name");
+            Task taskA = Task.Factory.StartNew(()=> Thread.Sleep(5000));
 
             Console.WriteLine("taskA Status [1]: {0}", taskA.Status);
+            Console.WriteLine("taskC Status [1]: {0}", taskC.Status);
 
             try
             {
                 Console.WriteLine("Waiting for task to complete");
                 taskA.Wait();
+                taskC.Wait();
                 Console.WriteLine("taskA Status [2]: {0}", taskA.Status);
 
             }
@@ -45,6 +49,9 @@ namespace TaskAsyncTest3
 
                 if (!completed)
                     Console.WriteLine("Timed out before task B completed.");
+                Thread.Sleep(6000);
+                Console.WriteLine($"task status: [{taskB.Status}]");
+
             }
             catch (AggregateException)
             {
@@ -53,6 +60,12 @@ namespace TaskAsyncTest3
 
             Console.ReadKey();
 
+        }
+
+        private static void MethodForTask1(object name)
+        {
+            Console.WriteLine($"Task parameter is {name}");
+            Thread.Sleep(3000);
         }
     }
 }

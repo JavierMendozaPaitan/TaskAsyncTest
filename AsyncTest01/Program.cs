@@ -6,7 +6,7 @@
         {
             Method01Async();
             Method03();
-            Method02Async();  
+            //Method02Async();  
 
             Console.WriteLine("Press key to continue");
             Console.ReadLine();

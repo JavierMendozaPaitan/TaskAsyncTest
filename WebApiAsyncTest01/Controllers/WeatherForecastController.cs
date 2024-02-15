@@ -80,8 +80,8 @@ namespace WebApiAsyncTest01.Controllers
             })
             .ToList();
             
-            Thread.Sleep(7000);
-            //Task.Delay(20000);
+            //Thread.Sleep(7000);
+            Task.Delay(20000).Wait();
 
             return list;
         }
