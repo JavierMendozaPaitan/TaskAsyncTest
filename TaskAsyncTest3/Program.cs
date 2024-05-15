@@ -11,46 +11,42 @@ namespace TaskAsyncTest3
     {
         static void Main(string[] args)
         {
-            Action<object> actionForTask = MethodForTask1;
-            Task taskC = Task.Factory.StartNew(actionForTask, "name");
-            Task taskA = Task.Factory.StartNew(()=> Thread.Sleep(5000));
+            Action<object> actionToExecute = MethodToExecute;
 
-            Console.WriteLine("taskA Status [1]: {0}", taskA.Status);
-            Console.WriteLine("taskC Status [1]: {0}", taskC.Status);
+            Console.WriteLine("Creating Task A");
+            Task taskA = Task.Factory.StartNew(actionToExecute, "A");
 
             try
             {
-                Console.WriteLine("Waiting for task to complete");
+                Console.WriteLine("Waiting for 2 second");
+                taskA.Wait(2000);       // Wait for 1 second.
+                Console.WriteLine("\nChecking if Task A is completed");
+                Console.WriteLine($"\tTask A is completed: [{taskA.IsCompleted}]\n" +
+                    $"\tStatus:[{taskA.Status}]");
+
+                if (!taskA.IsCompleted)
+                    Console.WriteLine("...Timed out!");
+                Console.WriteLine("Waiting up to the task end");
                 taskA.Wait();
-                taskC.Wait();
-                Console.WriteLine("taskA Status [2]: {0}", taskA.Status);
+                Console.WriteLine($"\tTask A is completed: [{taskA.IsCompleted}]\n" +
+                    $"\tStatus:[{taskA.Status}]");
 
-            }
-            catch (AggregateException)
-            {
-                Console.WriteLine("Exception in taskA.");
-            }
 
-            Console.WriteLine("Press Enter to continue:");
-            Console.ReadLine();
 
-            //###################################
-            Console.WriteLine("Task duration: 5 seconds");
-            Task taskB = Task.Run(() => Thread.Sleep(5000));
-            Console.WriteLine($"TaskB status: [{taskB.Status}]");
-            try
-            {
-                Console.WriteLine("Waiting for 1 second");
-                taskB.Wait(1000);       // Wait for 1 second.
+                Console.ReadLine();
 
-                bool completed = taskB.IsCompleted;
-                Console.WriteLine("Task B completed: {0}, Status: {1}",
-                                 completed, taskB.Status);
+                Console.WriteLine("Creating Task B");
+                Task taskB = Task.Factory.StartNew(actionToExecute, "B");
 
-                if (!completed)
-                    Console.WriteLine("Timed out before task B completed.");
-                Thread.Sleep(6000);
-                Console.WriteLine($"task status: [{taskB.Status}]");
+                int i = 0;
+                while(!taskB.IsCompleted)
+                {
+                    Console.Write($"Task B Status: [{taskB.Status}][{++i}]\r");
+                    taskB.Wait(500);
+                }
+
+                Console.WriteLine($"\n\tTask B is completed: [{taskB.IsCompleted}]\n" +
+                    $"\tStatus:[{taskB.Status}]");
 
             }
             catch (AggregateException)
@@ -58,14 +54,16 @@ namespace TaskAsyncTest3
                 Console.WriteLine("Exception in taskB.");
             }
 
-            Console.ReadKey();
+            Console.ReadLine();
 
         }
 
-        private static void MethodForTask1(object name)
+        private static void MethodToExecute(object name)
         {
-            Console.WriteLine($"Task parameter is {name}");
-            Thread.Sleep(3000);
+            Console.WriteLine($"---> Task action [{name}] is starting");
+            Thread.Sleep(7000);
+            Console.WriteLine($"---> Task action [{name}] is ending");
         }
+
     }
 }

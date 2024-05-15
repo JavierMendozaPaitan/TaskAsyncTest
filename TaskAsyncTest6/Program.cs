@@ -23,7 +23,7 @@ namespace TaskAsyncTest6
                                             ctr++;
                                             break;
                                          }
-                                         Thread.Sleep(500);
+                                         Thread.Sleep(100);
                                       }
 
                                       return ctr;

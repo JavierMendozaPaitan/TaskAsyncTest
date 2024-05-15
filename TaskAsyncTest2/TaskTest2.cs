@@ -13,44 +13,43 @@ namespace TaskAsyncTest2
 		{
 			 Action<object> action = (object obj) =>
                                 {
-                                   Console.WriteLine("Task={0}, obj={1}, Thread={2}",
-                                   Task.CurrentId, obj,
-                                   Thread.CurrentThread.ManagedThreadId);
+                                    Console.WriteLine($"Task {obj} started");
+                                    Console.WriteLine("--> TaskId={0}, name={1}, ThreadId={2}",
+                                        Task.CurrentId, obj,
+                                        Thread.CurrentThread.ManagedThreadId);
+                                    Thread.Sleep(2000);
+                                    Console.WriteLine($"Task {obj} finished\n");
                                 };
 
             // Create a task but do not start it.
-            Task t1 = new Task(action, "alpha");
+            Task taskAlpha = new Task(action, "alpha");
 
             // Construct a started task
-            Task t2 = Task.Factory.StartNew(action, "beta");
-
+            Task taskBeta = Task.Factory.StartNew(action, "beta");
+            Console.WriteLine($"Task beta launched. Status: [{taskBeta.Status}]");
             // Block the main thread to demonstrate that t2 is executing
-            t2.Wait();
+            taskBeta.Wait();
 
             // Launch t1 
-            t1.Start();
-            Console.WriteLine("t1 has been launched. (Main Thread={0})",
-                              Thread.CurrentThread.ManagedThreadId);
-
+            Console.WriteLine($"Task alpha launched. Status: [{taskAlpha.Status}]");
+            taskAlpha.Start();
             // Wait for the task to finish.
-            t1.Wait();
+            taskAlpha.Wait();
 
             // Construct a started task using Task.Run.
             String taskData = "delta";
-            Task t3 = Task.Run( () => {Console.WriteLine("Task={0}, obj={1}, Thread={2}",
-                                                         Task.CurrentId, taskData,
-                                                          Thread.CurrentThread.ManagedThreadId);
-                                       });
-
+            Task taskDelta = Task.Run( () => {
+                Console.WriteLine($"Task {taskData} started");
+                Console.WriteLine("-->TaskId={0}, name={1}, ThreadId={2}",
+                    Task.CurrentId, taskData, Thread.CurrentThread.ManagedThreadId);
+                Thread.Sleep(2000);
+                Console.WriteLine($"Task {taskData} finished\n");
+            });
+            Console.WriteLine($"Task {taskData} launched. Status: [{taskDelta.Status}]");
             // Wait for the task to finish.
-            t3.Wait();
+            taskDelta.Wait();
 
-            // Construct an unstarted task
-            Task t4 = new Task(action, "gamma");
-
-            // Run it synchronously
-            t4.RunSynchronously();
-            t4.Wait();
+            //Task.WaitAll();
 
             Console.ReadKey();
 		}

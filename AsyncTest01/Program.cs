@@ -2,11 +2,13 @@
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Method01Async();
-            Method03();
-            //Method02Async();  
+            var task = Method01Async();
+            //Method03();
+            //Method02Async(); 
+
+            Console.WriteLine($"Working in the main thread");
 
             Console.WriteLine("Press key to continue");
             Console.ReadLine();
@@ -15,12 +17,13 @@
 
         private static async Task Method01Async()
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
-                for (int i = 0; i < 100; i++)
+                Console.WriteLine($"Launching task [{Task.CurrentId}]");
+                for (int i = 0; i < 10; i++)
                 {
                     Console.WriteLine($"Method 1 value [{i}]");
-                    Task.Delay(200).Wait();
+                    await Task.Delay(200);
                 }
             });
         }

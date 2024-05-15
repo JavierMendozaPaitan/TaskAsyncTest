@@ -30,12 +30,14 @@ namespace TaskAsync4
 
             Console.WriteLine("Press enter to stop the task");
             Console.ReadLine();
-            Console.WriteLine("Sending Cancel signal to Task by Cancellation Token");
+            Console.WriteLine(" --> Sending Cancel signal to Task by Cancellation Token...");
             cancellationTokenSource.Cancel();
-            Console.WriteLine($"Task status: [{task.Status}]");
-            Console.WriteLine($"Loop executed {counter} times");
-            Thread.Sleep(5000);
-            Console.WriteLine($"Task status: [{task.Status}]");
+            while(!task.IsCompleted)
+            {
+                Console.WriteLine($"task status: [{task.Status}]");
+                Thread.Sleep(100);
+            }
+            Console.WriteLine($"task status: [{task.Status}]");
 
             Console.ReadKey();
 

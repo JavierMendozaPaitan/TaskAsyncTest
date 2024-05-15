@@ -32,15 +32,17 @@ namespace TaskAsyncTest5
             Console.ReadLine();
             //#######################################
 
-            Task[] taskList = new Task[10];
+            List<Task> taskList = new List<Task>();
 
             for (int i = 0; i < 10; i++)
-            {
-                taskList[i] = Task.Run(() => Thread.Sleep(2000));
+            {                
+                var task = Task.Run(() => Thread.Sleep(2000));
+                Console.WriteLine($"Launching TaskId: [{task.Id}] Status: [{task.Status}]");
+                taskList.Add(task);
             }
 
             try {
-                Task.WaitAll(taskList);
+                Task.WaitAll(taskList.ToArray());
             }
             catch (AggregateException ae) {
                 Console.WriteLine("One or more exceptions occurred: ");
